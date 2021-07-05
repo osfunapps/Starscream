@@ -105,8 +105,12 @@ public class TCPTransport: Transport {
             switch newState {
             case .ready:
                 self?.delegate?.connectionChanged(state: .connected)
-            case .waiting:
-                self?.delegate?.connectionChanged(state: .waiting)
+            case .waiting(let error):
+                if error.localizedDescription.contains("error") {
+                    self?.delegate?.connectionChanged(state: .failed(error))
+                } else {
+                    self?.delegate?.connectionChanged(state: .waiting)
+                }
             case .cancelled:
                 self?.delegate?.connectionChanged(state: .cancelled)
             case .failed(let error):
