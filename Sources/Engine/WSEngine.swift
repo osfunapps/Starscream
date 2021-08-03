@@ -28,6 +28,8 @@ FrameCollectorDelegate, HTTPHandlerDelegate {
     // osApps: if triggered, will not automate send headers upon a made connection, will not create a frame for each written data (will just send the data as is)
     public static var manualState = false
     
+    // osApps added: toggle to remove the Origin header from the list of headers sent in the initial connection
+    public static var addHTTPOriginHeader = true
     
     weak var delegate: EngineDelegate?
     public var respondToPingWithPong: Bool = true
