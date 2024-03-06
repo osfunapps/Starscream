@@ -102,15 +102,23 @@ public class TCPTransport: Transport {
             return
         }
         conn.stateUpdateHandler = { [weak self] (newState) in
+            print("new state is: \(newState)")
             switch newState {
             case .ready:
                 self?.delegate?.connectionChanged(state: .connected)
             case .waiting(let error):
-                if error.localizedDescription.contains("error") {
-                    self?.delegate?.connectionChanged(state: .failed(error))
-                } else {
-                    self?.delegate?.connectionChanged(state: .waiting)
+                
+                // osApps added: if conn refused, throw out!
+                if case let .posix(posixError) = error {
+                    switch posixError {
+                    case .ECONNREFUSED,.ETIMEDOUT,.ENETUNREACH,.EHOSTUNREACH,.EADDRNOTAVAIL,.ECONNRESET,.EHOSTDOWN:
+                        self?.delegate?.connectionChanged(state: .failed(error))
+                        return
+                    default:
+                        break
+                    }
                 }
+                self?.delegate?.connectionChanged(state: .waiting)
             case .cancelled:
                 self?.delegate?.connectionChanged(state: .cancelled)
             case .failed(let error):
