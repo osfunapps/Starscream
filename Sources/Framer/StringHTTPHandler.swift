@@ -110,7 +110,7 @@ public class StringHTTPHandler: HTTPHandler {
         }
         
         if code != HTTPWSHeader.switchProtocolCode {
-            delegate?.didReceiveHTTP(event: .failure(HTTPUpgradeError.notAnUpgrade(code, headers)))
+            delegate?.didReceiveHTTP(event: .failure(HTTPUpgradeError.notAnUpgrade(code)))
             return true
         }
         

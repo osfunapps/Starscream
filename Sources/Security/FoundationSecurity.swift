@@ -44,7 +44,9 @@ extension FoundationSecurity: CertificatePinning {
             return
         }
         
-        SecTrustSetPolicies(trust, SecPolicyCreateSSL(true, domain as NSString?))
+        if let validateDomain = domain {
+            SecTrustSetPolicies(trust, SecPolicyCreateSSL(true, validateDomain as NSString?))
+        }
         
         handleSecurityTrust(trust: trust, completion: completion)
     }

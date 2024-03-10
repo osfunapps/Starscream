@@ -72,7 +72,6 @@ public class NativeEngine: NSObject, Engine, URLSessionDataDelegate, URLSessionW
                 break
             case .failure(let error):
                 self?.broadcast(event: .error(error))
-                return
             }
             self?.doRead()
         }
