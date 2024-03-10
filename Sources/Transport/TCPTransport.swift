@@ -110,7 +110,7 @@ public class TCPTransport: Transport {
             case .waiting(let error):
                 if case let .posix(posixError) = error {
                     switch posixError {
-                    case .ECONNREFUSED,.ETIMEDOUT,.ENETUNREACH,.EHOSTUNREACH,.EADDRNOTAVAIL,.ECONNRESET,.EHOSTDOWN:
+                    case .ECONNREFUSED,.ETIMEDOUT,.ENETUNREACH, .ENETDOWN, .EHOSTUNREACH,.EADDRNOTAVAIL,.ECONNRESET,.EHOSTDOWN:
                         self?.delegate?.connectionChanged(state: .failed(error))
                         return
                     default:
