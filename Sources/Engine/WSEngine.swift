@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Network
 
 public class WSEngine: Engine, TransportEventClient, FramerEventClient,
 FrameCollectorDelegate, HTTPHandlerDelegate {
@@ -141,6 +142,22 @@ FrameCollectorDelegate, HTTPHandlerDelegate {
             handleError(error)
         case .viability(let isViable):
             broadcast(event: .viabilityChanged(isViable))
+            
+            // osApps added a check if WiFi is connected here
+            if !isViable {
+                let wifiMonitor = NWPathMonitor(requiredInterfaceType: .wifi)
+                wifiMonitor.start(queue: DispatchQueue.main)
+                // check if wifi connected
+                wifiMonitor.pathUpdateHandler = { path in
+                    if path.status == .satisfied && path.usesInterfaceType(.wifi) {
+                        print("WiFi is connected but the connection is not viable.")
+                    } else {
+                        self.forceStop()
+                    }
+                    // Since we only need to check once, you can cancel the monitor after getting the update.
+                    wifiMonitor.cancel()
+                }
+            }
         case .shouldReconnect(let status):
             broadcast(event: .reconnectSuggested(status))
         case .receive(let data):
