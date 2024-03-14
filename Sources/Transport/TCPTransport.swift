@@ -105,7 +105,16 @@ public class TCPTransport: Transport {
             switch newState {
             case .ready:
                 self?.delegate?.connectionChanged(state: .connected)
-            case .waiting:
+            case .waiting(let error):
+                if case let .posix(posixError) = error {
+                    switch posixError {
+                    case .ECONNREFUSED,.ETIMEDOUT,.ENETUNREACH, .ENETDOWN, .EHOSTUNREACH,.EADDRNOTAVAIL,.ECONNRESET,.EHOSTDOWN:
+                        self?.delegate?.connectionChanged(state: .failed(error))
+                        return
+                    default:
+                        break
+                    }
+                }
                 self?.delegate?.connectionChanged(state: .waiting)
             case .cancelled:
                 self?.delegate?.connectionChanged(state: .cancelled)
