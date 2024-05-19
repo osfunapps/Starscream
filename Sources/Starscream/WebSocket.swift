@@ -139,7 +139,7 @@ open class WebSocket: WebSocketClient, EngineDelegate {
         engine.stop(closeCode: closeCode)
     }
     
-    public func forceDisconnect() throws {
+    public func forceDisconnect() {
         engine.forceStop()
     }
     
