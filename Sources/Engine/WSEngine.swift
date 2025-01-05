@@ -251,7 +251,17 @@ FrameCollectorDelegate, HTTPHandlerDelegate {
         } else {
             stop()
         }
-        
+
+        // host is down will be handled as timeout reached
+        if let nwError = error as? NWError {
+            switch nwError {
+            case .posix(.ETIMEDOUT), .posix(.EHOSTDOWN):
+                delegate?.didReceive(event: .timeout)
+                return
+            default:
+                break
+            }
+        }
         delegate?.didReceive(event: .error(error))
     }
     
