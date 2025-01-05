@@ -228,7 +228,7 @@ FrameCollectorDelegate, HTTPHandlerDelegate {
         delegate?.didReceive(event: event)
     }
     
-    //This call can be coming from a lot of different queues/threads.
+   //This call can be coming from a lot of different queues/threads.
     //be aware of that when modifying shared variables
     private func handleError(_ error: Error?) {
         if let wsError = error as? WSError {
@@ -236,7 +236,17 @@ FrameCollectorDelegate, HTTPHandlerDelegate {
         } else {
             stop()
         }
-        
+
+        // host is down will be handled as timeout reached
+        if let nwError = error as? NWError {
+            switch nwError {
+            case .posix(.ETIMEDOUT), .posix(.EHOSTDOWN):
+                delegate?.didReceive(event: .timeout)
+                return
+            default:
+                break
+            }
+        }
         delegate?.didReceive(event: .error(error))
     }
     
