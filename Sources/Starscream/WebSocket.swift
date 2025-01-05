@@ -82,11 +82,11 @@ public enum WebSocketEvent {
     case pong(Data?)
     case ping(Data?)
     case error(Error?)
+    case timeout
     case viabilityChanged(Bool)
     case reconnectSuggested(Bool)
     case cancelled
 }
-
 public protocol WebSocketDelegate: class {
     func didReceive(event: WebSocketEvent, client: WebSocket)
 }
