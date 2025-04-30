@@ -129,6 +129,7 @@ FrameCollectorDelegate, HTTPHandlerDelegate {
         case .connected:
             if WSEngine.manualState {
                 self.canSend = true
+                broadcast(event: .ready)
                 break
             }else {
                 secKeyValue = HTTPWSHeader.generateWebSocketKey()
