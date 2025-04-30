@@ -87,6 +87,7 @@ public enum WebSocketEvent {
     case viabilityChanged(Bool)
     case reconnectSuggested(Bool)
     case cancelled
+    case ready
 }
 
 public protocol WebSocketDelegate: class {
